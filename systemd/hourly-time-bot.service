@@ -1,0 +1,45 @@
+[Unit]
+Description=Hourly Time Bot for MAX Platform
+Documentation=https://github.com/ramtuk/hourly-time-bot
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=voiceai
+Group=voiceai
+WorkingDirectory=/opt/hourly-time-bot
+
+# Environment variables
+Environment=PATH=/opt/hourly-time-bot/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PYTHONPATH=/opt/hourly-time-bot
+
+# Load environment variables from .env file
+EnvironmentFile=/opt/hourly-time-bot/.env
+
+# Main process
+ExecStart=/opt/hourly-time-bot/venv/bin/python /opt/hourly-time-bot/run.py
+
+# Process management
+Restart=always
+RestartSec=10
+StartLimitInterval=60
+StartLimitBurst=3
+
+# Logging
+StandardOutput=file:/opt/hourly-time-bot/logs/systemd-output.log
+StandardError=file:/opt/hourly-time-bot/logs/systemd-error.log
+SyslogIdentifier=hourly-time-bot
+
+# Security
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target
